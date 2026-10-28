@@ -1,0 +1,1530 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#161410">
+  <meta name="description" content="MARY — Cocktail bar, lounge & bistrot. Un luogo dove il tempo rallenta e ogni incontro trova la sua atmosfera.">
+  <title>MARY — Cocktail & Lounge Bar</title>
+
+  <!--
+    MARY | HERO CONCEPT
+    Un unico file HTML: markup, stile e animazioni sono integrati qui.
+    Fotografia provvisoria di repertorio (Pexels):
+    https://www.pexels.com/photo/interior-design-of-a-bar-and-restaurant-5863513/
+    Per utilizzare la foto del locale, sostituisci soltanto l'URL nell'elemento
+    <img class="hero__photo">. Il sito funziona senza build e senza framework.
+  -->
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preconnect" href="https://images.pexels.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500&family=Manrope:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --paper: #f3eee5;
+      --pearl: #d9d0c3;
+      --stone: #a79c8e;
+      --ink: #161410;
+      --ease-out: cubic-bezier(.2,.7,.19,1);
+      --ease-cinema: cubic-bezier(.16,1,.3,1);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; }
+    html { background: var(--ink); }
+    body {
+      min-width: 320px;
+      margin: 0;
+      background: var(--ink);
+      color: var(--paper);
+      font-family: 'Manrope', sans-serif;
+      -webkit-font-smoothing: antialiased;
+      overflow: hidden;
+    }
+
+    .hero {
+      position: relative;
+      isolation: isolate;
+      width: 100%;
+      height: 100vh;
+      height: 100svh;
+      min-height: 540px;
+      overflow: hidden;
+      background: #241e19;
+    }
+
+    /* PHOTO / REPLACEABLE ASSET */
+    .hero__photo {
+      position: absolute;
+      inset: 0;
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center 53%;
+      filter: saturate(.57) contrast(.99) brightness(.84);
+      /* La foto rimane immobile: nessuno zoom o spostamento tra intro e pagina. */
+      transform: none;
+      transition: none;
+      z-index: -3;
+    }
+    .hero.is-started .hero__photo { transform: none; }
+
+    /* Neutral cinematic scrims — no saturated colors */
+    .hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(90deg, rgba(16,15,13,.61) 0%, rgba(16,15,13,.34) 39%, rgba(16,15,13,.38) 63%, rgba(16,15,13,.65) 100%),
+        linear-gradient(180deg, rgba(15,14,12,.62) 0%, rgba(16,15,13,.16) 23%, rgba(17,15,12,.3) 67%, rgba(13,12,11,.8) 100%);
+      z-index: -2;
+      pointer-events: none;
+    }
+    .hero::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse 67% 47% at 50% 41%, rgba(17,15,12,.01), rgba(12,11,10,.27) 78%, rgba(11,10,9,.47));
+      z-index: -1;
+      pointer-events: none;
+    }
+
+    /* Quiet editorial framing */
+    .topline, .bottomline {
+      position: absolute;
+      left: 0;
+      right: 0;
+      z-index: 4;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+      padding-left: clamp(25px, 5vw, 92px);
+      padding-right: clamp(25px, 5vw, 92px);
+      font-size: 9px;
+      letter-spacing: .27em;
+      line-height: 1.65;
+      font-weight: 500;
+      color: rgba(241,235,224,.76);
+      text-transform: uppercase;
+      opacity: 0;
+      transition: opacity 1s ease;
+    }
+    .hero.is-started .topline, .hero.is-started .bottomline { opacity: 1; }
+    .topline { top: clamp(27px, 5vh, 54px); }
+    .bottomline { bottom: clamp(26px, 5vh, 52px); }
+    .topline__left, .bottomline__left { display: flex; align-items: center; gap: 16px; }
+    .topline__rule { height: 1px; width: 43px; background: rgba(241,235,224,.43); }
+    .bottomline__line { height: 1px; width: 48px; background: rgba(241,235,224,.35); }
+    .topline__right { text-align: right; }
+    .bottomline__right { letter-spacing: .22em; }
+
+    /* Composition: a logo that makes room for the incoming copy */
+    .hero__wordmark {
+      position: absolute;
+      top: 47%;
+      left: 50%;
+      width: max-content;
+      max-width: 92%;
+      text-align: center;
+      opacity: 0;
+      transform: translate3d(-50%,calc(-50% + 25px),0) scale(1.035);
+      filter: blur(7px);
+      transition:
+        transform 1.45s var(--ease-cinema),
+        opacity 1.18s ease,
+        filter 1.15s ease;
+      will-change: transform;
+    }
+    .hero.is-started .hero__wordmark {
+      opacity: 1;
+      filter: blur(0);
+      transform: translate3d(-50%,-50%,0) scale(1);
+    }
+    .hero.is-lifted .hero__wordmark {
+      transform: translate3d(-50%,calc(-50% - clamp(80px, 11vh, 126px)),0) scale(.97);
+    }
+
+    .wordmark__title {
+      margin: 0;
+      padding-right: .085em;
+      font-family: 'Cormorant Garamond', 'Times New Roman', serif;
+      font-size: clamp(112px, 18.7vw, 302px);
+      font-weight: 300;
+      line-height: .77;
+      letter-spacing: -.068em;
+      text-transform: uppercase;
+      background: linear-gradient(112deg, #fff9ef 4%, #e1d6c8 36%, #fffaf1 63%, #c5b9ab 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      -webkit-text-fill-color: transparent;
+      text-shadow: 0 12px 55px rgba(4,4,3,.08);
+      user-select: none;
+    }
+    /* First-load reveal: the logo materializes in place, without moving its position. */
+    @keyframes mary-logo-appear {
+      from { opacity: 0; filter: blur(5px); transform: scale(.975); }
+      to   { opacity: 1; filter: blur(0); transform: scale(1); }
+    }
+    .wordmark__title,
+    .wordmark__subtitle {
+      animation: mary-logo-appear 1.15s cubic-bezier(.2,.7,.19,1) both;
+    }
+    .wordmark__subtitle { animation-delay: .16s; }
+
+    .wordmark__subtitle {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: clamp(14px, 2.6vw, 34px);
+      margin-top: clamp(21px, 2.8vw, 34px);
+      color: rgba(243,237,227,.84);
+      font-size: clamp(8px, .72vw, 10px);
+      font-weight: 500;
+      letter-spacing: clamp(.22em, .45vw, .44em);
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+    .wordmark__subtitle::before,
+    .wordmark__subtitle::after {
+      content: '';
+      display: block;
+      width: clamp(25px, 5.8vw, 83px);
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(224,213,198,.54));
+    }
+    .wordmark__subtitle::after { transform: rotate(180deg); }
+
+    .hero__description {
+      position: absolute;
+      top: calc(47% + clamp(76px, 6.2vw, 114px));
+      left: 50%;
+      width: min(548px, 78vw);
+      margin-left: 0;
+      opacity: 0;
+      clip-path: inset(0 100% 0 0);
+      transform: translate3d(calc(-50% - 85px), 14px, 0);
+      transition:
+        clip-path 1.35s var(--ease-cinema),
+        transform 1.55s var(--ease-cinema),
+        opacity 1.1s ease;
+    }
+    .hero.is-copy-visible .hero__description {
+      opacity: 1;
+      clip-path: inset(0 0 0 0);
+      transform: translate3d(-50%,0,0);
+    }
+
+    .description__kicker {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 18px;
+      font-size: 9px;
+      font-weight: 600;
+      letter-spacing: .32em;
+      color: var(--pearl);
+      text-transform: uppercase;
+    }
+    .description__kicker::before {
+      content: '';
+      display: inline-block;
+      width: 22px;
+      height: 1px;
+      background: currentColor;
+      opacity: .7;
+    }
+    .description__text {
+      margin: 0;
+      color: #f2ede5;
+      font-size: clamp(15px, 1.25vw, 18px);
+      font-weight: 300;
+      letter-spacing: .008em;
+      line-height: 1.93;
+      text-wrap: pretty;
+      text-shadow: 0 1px 23px rgba(0,0,0,.33);
+    }
+    .description__text em {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: 1.35em;
+      font-style: italic;
+      font-weight: 400;
+      letter-spacing: 0;
+      color: #e9dfd2;
+    }
+
+    /* Fine hairline details, no extra page sections */
+    .frame { position: absolute; inset: clamp(18px,3vw,40px); z-index: 3; pointer-events: none; }
+    .frame::before, .frame::after {
+      content: '';
+      position: absolute;
+      height: 32px;
+      width: 1px;
+      background: linear-gradient(rgba(236,227,212,.28),transparent);
+      top: 0;
+    }
+    .frame::before { left: 0; }
+    .frame::after { right: 0; }
+
+    /* Smaller laptops */
+    @media (max-height: 670px) and (min-width: 768px) {
+      .hero__wordmark { top: 44%; }
+      .hero__description { top: calc(44% + 115px); }
+      .wordmark__title { font-size: clamp(112px, 16vw, 220px); }
+      .hero.is-lifted .hero__wordmark {
+        transform: translate3d(-50%,calc(-50% - 86px),0) scale(.97);
+      }
+    }
+    @media (max-width: 767px) {
+      .hero { min-height: 510px; }
+      .hero__photo { object-position: 52% center; }
+      .topline, .bottomline {
+        font-size: 8px;
+        letter-spacing: .18em;
+        padding-left: 25px;
+        padding-right: 25px;
+      }
+      .topline { top: 28px; }
+      .bottomline { bottom: 28px; }
+      .topline__rule { width: 24px; }
+      .topline__left { gap: 10px; }
+      .topline__right { max-width: 150px; }
+      .bottomline__line { width: 22px; }
+      .hero__wordmark { top: 44%; max-width: 95%; }
+      .wordmark__title { font-size: clamp(99px, 26.2vw, 176px); letter-spacing: -.075em; }
+      .wordmark__subtitle { margin-top: 22px; font-size: 8px; letter-spacing: .19em; gap: 13px; }
+      .wordmark__subtitle::before, .wordmark__subtitle::after { width: 19px; }
+      .hero.is-lifted .hero__wordmark {
+        transform: translate3d(-50%,calc(-50% - clamp(74px, 9.3vh, 106px)),0) scale(.97);
+      }
+      .hero__description {
+        top: calc(44% + 100px);
+        width: min(430px, calc(100% - 70px));
+        transform: translate3d(calc(-50% - 50px), 10px,0);
+      }
+      .description__text { font-size: clamp(14px, 3.35vw, 16px); line-height: 1.82; }
+      .description__kicker { margin-bottom: 11px; font-size: 8px; letter-spacing: .2em; }
+      .frame { inset: 15px; }
+    }
+    @media (max-width: 390px) {
+      .hero__wordmark { top: 42%; }
+      .hero__description { top: calc(42% + 96px); width: calc(100% - 58px); }
+      .wordmark__title { font-size: clamp(91px, 26vw, 110px); }
+      .description__text { font-size: 14px; }
+      .topline__right { display: none; }
+    }
+    @media (max-height: 600px) and (max-width: 767px) {
+      .hero__wordmark { top: 39%; }
+      .hero__description { top: calc(39% + 90px); }
+      .wordmark__title { font-size: clamp(83px, 21vw, 115px); }
+      .wordmark__subtitle { margin-top: 15px; }
+      .hero.is-lifted .hero__wordmark { transform: translate3d(-50%,calc(-50% - 61px),0) scale(.97); }
+      .description__kicker { margin-bottom: 9px; }
+      .description__text { font-size: 13px; line-height: 1.66; }
+      .bottomline { display: none; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation: none !important; transition-duration: .01ms !important; }
+      .hero__photo { transform: scale(1) !important; }
+      .hero__wordmark { filter: none !important; }
+      .wordmark__title, .wordmark__subtitle { animation: none !important; }
+    }
+
+
+    /* SECOND ACT — prima escono i testi, poi la pagina fullscreen appare in dissolvenza. */
+    .hero.is-exiting .hero__wordmark {
+      opacity: 0;
+      transform: translate3d(-50%, calc(-50% - 110vh), 0) scale(.97);
+      transition: transform .66s cubic-bezier(.55,0,.85,.42), opacity .66s ease-in;
+    }
+    .hero.is-exiting .hero__description {
+      opacity: 0;
+      clip-path: inset(0 0 0 0);
+      transform: translate3d(-50%, 110vh, 0);
+      transition: transform .66s cubic-bezier(.55,0,.85,.42), opacity .66s ease-in;
+    }
+    .hero.is-exiting .topline, .hero.is-exiting .bottomline { opacity: 0; transition-duration: .6s; }
+
+    /* The entire destination is inside the animated surface, not a fake screenshot. */
+    .site-shell {
+      position: fixed;
+      inset: 0;
+      z-index: 20;
+      width: 100%;
+      height: 100vh;
+      height: 100dvh;
+      overflow-x: hidden;
+      overflow-y: auto;
+      scrollbar-width: none; /* Nasconde la barra senza disattivare lo scroll */
+      -ms-overflow-style: none;
+      overscroll-behavior: contain;
+      /* La hero della pagina mostra la STESSA foto gia' presente sotto,
+         senza crearne un secondo livello con un ritaglio diverso. */
+      background: transparent;
+      color: var(--paper);
+      opacity: 0;
+      transform: translate3d(0,0,0) scale(1);
+      transform-origin: 50% 50%;
+      border-radius: 0;
+      pointer-events: none;
+      -webkit-overflow-scrolling: touch;
+      transition: opacity 1.12s cubic-bezier(.42,0,.58,1);
+    }
+    .site-shell::-webkit-scrollbar { display: none; width: 0; height: 0; }
+    .site-shell.is-revealing {
+      opacity: 1;
+    }
+    /* Stessa dissolvenza in entrata e in uscita, sempre a schermo intero. */
+    .site-shell.is-returning {
+      transition: opacity 1.12s cubic-bezier(.42,0,.58,1);
+    }
+    .hero.is-returning .hero__wordmark {
+      transition: transform .66s cubic-bezier(.15,.58,.45,1),
+                  opacity .66s ease-out;
+    }
+    .hero.is-returning .hero__description {
+      transition: transform .66s cubic-bezier(.15,.58,.45,1),
+                  opacity .66s ease-out;
+    }
+    .site-shell.is-ready { pointer-events: auto; }
+    .site-shell:focus { outline: none; }
+/* ACT III — MARY / EDITION 02 — SCOPED TO THE NAVIGABLE SITE ONLY */
+.site-shell { --m-paper:#eee9e0; --m-ink:#171613; --m-warm:#b7a58e; --m-line:rgba(238,230,216,.22); color:var(--m-paper); scroll-behavior:smooth; }
+.site-shell a, .site-shell button { -webkit-tap-highlight-color:transparent; }
+.site-shell button { font:inherit; }
+.site-shell :focus-visible { outline:2px solid #e9cfa8; outline-offset:4px; }
+.site-shell img { display:block; }
+.site-shell ::selection { background:#bca992; color:#181613; }
+.site-shell .site-header { position:absolute; inset:0 0 auto; z-index:60; height:110px; background:transparent; border:0; display:flex; align-items:center; justify-content:space-between; padding:18px clamp(22px,5.1vw,94px); gap:30px; }
+.site-brand { display:flex; flex-direction:column; flex:0 0 auto; color:#fcf4e7; text-decoration:none; gap:4px; }
+.site-brand__name { font:300 56px/.72 'Cormorant Garamond',Georgia,serif; letter-spacing:-.09em; }
+.site-brand__sub { font:600 8px/1.3 'Manrope',sans-serif; letter-spacing:.24em; text-transform:uppercase; opacity:.82; }
+.site-nav { display:flex; align-items:center; gap:clamp(17px,2.5vw,42px); }
+.site-nav a { color:#f2ebdf; opacity:.88; text-decoration:none; font-size:9px; font-weight:600; letter-spacing:.19em; text-transform:uppercase; transition:opacity .25s; }
+.site-nav a:hover { opacity:.55; }
+.site-nav a.site-nav__booking { padding:15px 20px; border:1px solid rgba(246,233,214,.62); opacity:1; white-space:nowrap; }
+.site-menu-toggle { display:none; }
+.mr-number { color:currentColor; opacity:.62; font:500 10px/1.6 'Manrope',sans-serif; letter-spacing:.24em; text-transform:uppercase; }
+.mr-label { font:600 10px/1.5 'Manrope',sans-serif; letter-spacing:.28em; text-transform:uppercase; }
+.mr-title { font:300 clamp(77px,10vw,178px)/.78 'Cormorant Garamond',Georgia,serif; letter-spacing:-.075em; margin:0; }
+.mr-title em { font-weight:300; }
+.mr-copy { font:300 clamp(14px,1.1vw,17px)/1.92 'Manrope',sans-serif; letter-spacing:.008em; }
+.mr-link { display:inline-flex; gap:36px; width:max-content; align-items:center; border:0; border-bottom:1px solid currentColor; padding:0 0 13px; color:inherit; font:600 10px/1.5 'Manrope',sans-serif; letter-spacing:.18em; text-decoration:none; text-transform:uppercase; transition:gap .35s,opacity .3s; }
+.mr-link:hover { gap:49px; opacity:.76; }
+.mr-link span { font-size:21px; line-height:.7; font-weight:300; }
+.mr-inner { width:min(calc(100% - clamp(44px,10.4vw,192px)),1510px); margin:0 auto; }
+/* Foreground page intro retains EXACT original shared hero photograph underneath */
+.mr-opening { min-height:100vh; min-height:100svh; padding:150px clamp(24px,8vw,150px) clamp(54px,9vh,108px); background:transparent; position:relative; display:flex; align-items:end; overflow:hidden; }
+.mr-opening__content { position:relative; width:min(100%,1120px); z-index:1; }
+.mr-opening__eyebrow { display:flex; align-items:center; gap:18px; margin-bottom:28px; color:#e3d7c6; }
+.mr-opening__eyebrow:before { content:''; width:42px; height:1px; background:currentColor; }
+.mr-opening h2 { font:300 clamp(90px,13vw,235px)/.76 'Cormorant Garamond',Georgia,serif; letter-spacing:-.075em; margin:0; }
+.mr-opening h2 em { color:#d9c8b1; font-weight:300; }
+.mr-opening__bottom { display:flex; align-items:end; justify-content:space-between; max-width:1040px; gap:50px; margin-top:clamp(33px,5.5vh,65px); }
+.mr-opening__bottom p { max-width:475px; color:#f3e9dc; margin:0; }
+.mr-opening__coords { position:absolute; right:clamp(25px,5vw,85px); top:48%; transform:rotate(90deg); transform-origin:right; font-size:9px; color:#ddcbb5; letter-spacing:.35em; }
+.mr-opening__corner { position:absolute; right:clamp(25px,5vw,85px); bottom:clamp(55px,8vw,90px); font-size:10px; letter-spacing:.25em; }
+/* Manifesto: decisive asymmetry and overscale type */
+.mr-manifesto { position:relative; overflow:hidden; background:#e9e2d6; color:#242019; padding:clamp(110px,13vw,220px) 0 clamp(125px,16vw,250px); }
+.mr-manifesto__header { display:flex; justify-content:space-between; align-items:center; gap:35px; margin-bottom:clamp(65px,8vw,130px); border-bottom:1px solid rgba(60,52,43,.24); padding-bottom:23px; }
+.mr-manifesto__grid { display:grid; grid-template-columns:minmax(0,1.65fr) minmax(280px,.55fr); align-items:end; gap:5vw; }
+.mr-manifesto__headline { max-width:1160px; font:300 clamp(80px,11.7vw,220px)/.82 'Cormorant Garamond',Georgia,serif; letter-spacing:-.075em; margin:0; }
+.mr-manifesto__headline em { color:#91816d; font-weight:300; }
+.mr-manifesto__aside { padding-bottom:11px; }
+.mr-manifesto__aside p { color:#66594a; margin:0 0 42px; }
+.mr-manifesto__stamp { position:absolute; bottom:26px; right:5vw; font:300 19vw/.7 'Cormorant Garamond',Georgia,serif; color:rgba(82,65,50,.044); letter-spacing:-.08em; pointer-events:none; }
+/* Cinematic pinned chapter I: three distinct moments with picture wipe + typography */
+.mr-moments { position:relative; height:320vh; height:320svh; background:#181611; }
+.mr-moments__sticky { position:sticky; top:0; height:100vh; height:100svh; overflow:hidden; isolation:isolate; }
+.mr-moments__scene, .mr-moments__photo, .mr-moments__shade { position:absolute; inset:0; }
+.mr-moments__scene { overflow:hidden; opacity:0; visibility:hidden; transition:opacity .7s ease,visibility .7s; }
+.mr-moments__scene.is-active { opacity:1; visibility:visible; }
+.mr-moments__photo { width:100%; height:100%; object-fit:cover; filter:saturate(.59) brightness(.69); transform:scale(1.08); transition:transform 2s cubic-bezier(.2,.7,.19,1),filter 1s; }
+.mr-moments__scene.is-active .mr-moments__photo { transform:scale(1); }
+.mr-moments__shade { background:linear-gradient(90deg,rgba(13,12,11,.82) 5%,rgba(14,13,12,.36) 67%,rgba(13,12,11,.3)),linear-gradient(0deg,rgba(12,11,10,.55),transparent 50%); }
+.mr-moments__content { position:relative; z-index:3; height:100%; display:flex; flex-direction:column; justify-content:center; padding-top:8vh; pointer-events:none; }
+.mr-moments__meta { position:absolute; top:clamp(36px,6vh,85px); left:0; display:flex; gap:35px; align-items:center; }
+.mr-moments__current { font:300 clamp(25px,3vw,49px)/1 'Cormorant Garamond',Georgia,serif; }
+.mr-moments__headline { position:relative; min-height:clamp(180px,25vw,380px); }
+.mr-moments__title { position:absolute; top:0; left:0; margin:0; font:300 clamp(86px,13vw,235px)/.74 'Cormorant Garamond',Georgia,serif; letter-spacing:-.08em; opacity:0; transform:translate3d(0,75px,0); filter:blur(12px); transition:opacity .7s ease,transform .9s cubic-bezier(.16,1,.3,1),filter .7s ease; }
+.mr-moments__title.is-active { opacity:1; transform:none; filter:none; }
+.mr-moments__title em { color:#dac9b4; font-weight:300; }
+.mr-moments__descs { height:105px; position:relative; max-width:560px; }
+.mr-moments__desc { position:absolute; inset:0; opacity:0; transform:translateY(25px); transition:opacity .55s,transform .6s; color:#f0e6d8; }
+.mr-moments__desc.is-active { opacity:1; transform:none; }
+.mr-moments__pagination { position:absolute; bottom:clamp(30px,6vh,80px); left:0; right:0; display:grid; grid-template-columns:repeat(3,1fr); gap:18px; }
+.mr-moments__dot { display:flex; align-items:center; gap:14px; padding-top:17px; border-top:1px solid rgba(255,255,255,.28); opacity:.52; transition:opacity .5s,border-color .5s; font-size:9px; letter-spacing:.23em; text-transform:uppercase; }
+.mr-moments__dot.is-active { opacity:1; border-color:#f8e6d1; }
+.mr-moments__progress { position:absolute; z-index:4; top:0; left:0; width:100%; height:2px; background:rgba(255,255,255,.2); }
+.mr-moments__progress:before { content:''; display:block; height:100%; width:calc(var(--moments-progress,0) * 100%); background:#e1cbb0; }
+/* Three.js / living object: pinned sculpture with cursor-reactive lathe glass */
+.mr-object { height:235vh; height:235svh; position:relative; background:#141511; }
+.mr-object__sticky { position:sticky; top:0; height:100vh; height:100svh; overflow:hidden; isolation:isolate; }
+.mr-object__sticky:before { position:absolute; content:''; inset:0; z-index:-1; background:radial-gradient(ellipse 55% 80% at 75% 55%,#3b342b 0%,#181914 60%,#131410 100%); }
+.mr-object__grain { position:absolute; inset:0; pointer-events:none; opacity:.24; background:repeating-linear-gradient(0deg,rgba(255,255,255,.012) 0px,rgba(255,255,255,.012) 1px,transparent 1px,transparent 4px); }
+.mr-object__copy { position:relative; z-index:4; height:100%; display:flex; flex-direction:column; justify-content:center; align-items:flex-start; pointer-events:none; }
+.mr-object__copy > * { max-width:570px; }
+.mr-object__copy h2 { margin:34px 0 28px; font:300 clamp(78px,9.4vw,166px)/.82 'Cormorant Garamond',Georgia,serif; letter-spacing:-.075em; }
+.mr-object__copy h2 em { font-weight:300; color:#beab93; }
+.mr-object__copy .mr-copy { max-width:370px; color:#c8beb0; }
+.mr-object__action { pointer-events:auto; color:#f4e9db; background:none; border:0; border-bottom:1px solid #a99a86; padding:12px 0; margin-top:28px; cursor:pointer; font-size:10px; letter-spacing:.2em; text-transform:uppercase; }
+.mr-object__action:hover { color:#b8a68b; }
+.mr-object__canvas { position:absolute; z-index:2; inset:0 0 0 39%; width:61%; height:100%; overflow:hidden; pointer-events:none; }
+.mr-object__canvas canvas { width:100%; height:100%; display:block; }
+.mr-object__fallback { position:absolute; z-index:1; width:min(39vw,520px); aspect-ratio:1; top:50%; left:70%; transform:translate(-50%,-50%); border:1px solid rgba(233,207,170,.19); border-radius:50%; box-shadow:0 0 80px 12px rgba(175,145,102,.09),inset -20px 10px 90px rgba(217,178,123,.1); background:radial-gradient(circle at 40% 37%,rgba(255,245,224,.39),rgba(194,162,123,.12) 30%,rgba(18,20,16,.02) 55%,rgba(10,10,9,.08)); opacity:1; transition:opacity .6s; }
+.mr-object__fallback-glass { position:absolute; top:0; left:50%; width:84%; height:100%; transform:translateX(-50%) rotateY(0deg); transform-style:preserve-3d; transition:transform 1.35s cubic-bezier(.16,1,.3,1); filter:drop-shadow(0 0 18px rgba(239,218,189,.18)); }
+.mr-object.is-webgl .mr-object__fallback { opacity:0; }
+.mr-object__corner { position:absolute; right:clamp(25px,5vw,96px); bottom:6vh; color:#9b9283; font-size:9px; letter-spacing:.25em; text-transform:uppercase; }
+/* Bistrot atelier — interactive content switch, large editorial card composition */
+.mr-bistrot { background:#e8e0d4; color:#242019; padding:clamp(110px,11vw,180px) 0; }
+.mr-bistrot__top { display:flex; justify-content:space-between; align-items:end; gap:45px; margin-bottom:clamp(50px,6vw,100px); }
+.mr-bistrot__top .mr-title { font-size:clamp(90px,10vw,170px); }
+.mr-bistrot__top .mr-copy { max-width:290px; color:#655b50; }
+.mr-bistrot__grid { display:grid; grid-template-columns:minmax(260px,.76fr) minmax(0,1.24fr); gap:clamp(24px,5vw,85px); align-items:stretch; border-top:1px solid rgba(45,39,33,.22); padding-top:30px; }
+.mr-bistrot__tabs { display:flex; flex-direction:column; align-self:center; }
+.mr-bistrot__tab { display:grid; grid-template-columns:38px 1fr 24px; align-items:center; gap:12px; padding:24px 5px 24px 0; color:#807468; border:0; border-bottom:1px solid rgba(45,39,33,.18); background:none; cursor:pointer; text-align:left; transition:color .3s,padding-left .3s; }
+.mr-bistrot__tab span:nth-child(1) { font:500 10px/1.5 'Manrope',sans-serif; letter-spacing:.1em; }
+.mr-bistrot__tab span:nth-child(2) { font:300 clamp(37px,4vw,68px)/1 'Cormorant Garamond',Georgia,serif; letter-spacing:-.045em; }
+.mr-bistrot__tab span:nth-child(3) { font-size:20px; }
+.mr-bistrot__tab[aria-selected="true"] { color:#27221c; padding-left:15px; }
+.mr-bistrot__preview { min-height:clamp(500px,50vw,800px); position:relative; overflow:hidden; background:#3a3129; }
+.mr-bistrot__preview:after { content:''; position:absolute; inset:45% 0 0; background:linear-gradient(transparent,rgba(14,12,10,.78)); pointer-events:none; }
+.mr-bistrot__image { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; filter:saturate(.72); transform:scale(1.08); opacity:0; transition:opacity .7s,transform 1.35s cubic-bezier(.16,1,.3,1); }
+.mr-bistrot__image.is-active { opacity:1; transform:scale(1); }
+.mr-bistrot__preview-copy { position:absolute; z-index:1; left:clamp(24px,4vw,70px); right:24px; bottom:clamp(25px,4vw,60px); color:#fff8ee; }
+.mr-bistrot__preview-copy h3 { margin:15px 0 10px; font:300 clamp(48px,6vw,100px)/.85 'Cormorant Garamond',Georgia,serif; letter-spacing:-.055em; }
+.mr-bistrot__preview-copy p { max-width:440px; font:300 13px/1.8 'Manrope',sans-serif; }
+.mr-bistrot__footer { margin-top:40px; display:flex; justify-content:space-between; gap:25px; align-items:center; color:#695d50; }
+/* Cinematic pinned chapter II — horizontal filmstrips instead of fades */
+.mr-night { position:relative; height:320vh; height:320svh; background:#100f0e; }
+.mr-night__sticky { position:sticky; top:0; height:100vh; height:100svh; overflow:hidden; }
+.mr-night__top { position:absolute; z-index:5; inset:0 0 auto; display:flex; justify-content:space-between; gap:20px; padding:clamp(24px,4vw,65px) clamp(24px,5vw,93px); pointer-events:none; }
+.mr-night__track { display:flex; width:300%; height:100%; will-change:transform; transform:translate3d(calc(var(--night-progress,0) * -66.666666%),0,0); }
+.mr-night__slide { position:relative; flex:0 0 33.333333%; height:100%; overflow:hidden; isolation:isolate; }
+.mr-night__slide img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; filter:brightness(.6) saturate(.55); }
+.mr-night__slide:after { content:''; z-index:0; position:absolute; inset:0; background:linear-gradient(90deg,rgba(11,10,9,.68),transparent 80%),linear-gradient(0deg,rgba(11,10,9,.75),transparent 60%); }
+.mr-night__slide-inner { position:relative; z-index:1; height:100%; display:flex; flex-direction:column; justify-content:end; align-items:flex-start; padding:clamp(70px,10vw,175px) clamp(24px,9vw,166px); }
+.mr-night__slide-inner h2 { margin:22px 0 25px; font:300 clamp(90px,12vw,215px)/.77 'Cormorant Garamond',Georgia,serif; letter-spacing:-.076em; }
+.mr-night__slide-inner p { max-width:430px; color:#e8dacc; }
+.mr-night__progress { position:absolute; z-index:8; bottom:0; left:0; right:0; height:3px; background:rgba(255,255,255,.2); }
+.mr-night__progress:after { content:''; display:block; height:100%; width:calc(var(--night-progress,0) * 100%); background:#e0c5a2; }
+.mr-night__index { position:absolute; z-index:8; right:clamp(25px,6vw,95px); bottom:clamp(28px,5vw,75px); font:300 36px 'Cormorant Garamond',Georgia,serif; }
+/* Contacts: very large contemporary sign-off */
+.mr-visit { background:#e9e2d7; color:#262019; padding:clamp(100px,13vw,220px) 0 clamp(40px,6vw,100px); }
+.mr-visit__heading { margin:35px 0 clamp(70px,9vw,150px); font:300 clamp(105px,16vw,295px)/.69 'Cormorant Garamond',Georgia,serif; letter-spacing:-.085em; }
+.mr-visit__heading em { color:#a18f77; font-weight:300; }
+.mr-visit__grid { border-top:1px solid rgba(49,42,35,.28); display:grid; grid-template-columns:1.5fr 1fr 1fr; gap:35px; padding-top:33px; }
+.mr-visit__unit h3 { margin:0 0 22px; font:600 10px 'Manrope',sans-serif; letter-spacing:.25em; color:#8a7d6d; text-transform:uppercase; }
+.mr-visit__unit p, .mr-visit__unit a { font:300 clamp(26px,2.6vw,43px)/1.18 'Cormorant Garamond',Georgia,serif; letter-spacing:-.025em; }
+.mr-visit__unit a { color:inherit; text-decoration:none; border-bottom:1px solid rgba(60,45,30,.36); }
+.mr-visit__unit a:hover { color:#8b745d; }
+.mr-visit__note { color:#73685a; font:400 12px/1.7 'Manrope',sans-serif !important; }
+.mr-visit__actions { display:flex; flex-wrap:wrap; gap:16px; margin:clamp(55px,7vw,110px) 0; }
+.mr-button { text-decoration:none; display:inline-flex; gap:35px; align-items:center; padding:19px 25px; font:600 10px/1.4 'Manrope',sans-serif; letter-spacing:.18em; text-transform:uppercase; background:#26211c; color:#f1e8da; border:1px solid #26211c; transition:background .2s,color .2s; }
+.mr-button--outline { color:#26211c; background:transparent; }
+.mr-button:hover { background:#a18d73; color:#fff; }
+.mr-footer { padding-top:35px; border-top:1px solid rgba(49,42,35,.2); display:flex; justify-content:space-between; align-items:end; gap:25px; }
+.mr-footer strong { font:300 clamp(80px,11vw,178px)/.7 'Cormorant Garamond',Georgia,serif; letter-spacing:-.09em; }
+.mr-footer span { font:500 9px/1.7 'Manrope',sans-serif; letter-spacing:.16em; text-transform:uppercase; color:#726557; }
+/* Lightweight entrance reveals used only in act III */
+[data-mr-reveal] { opacity:0; transform:translate3d(0,38px,0); filter:blur(4px); transition:opacity .85s,transform 1.05s cubic-bezier(.16,1,.3,1),filter .85s; }
+[data-mr-reveal].is-inview { opacity:1; transform:none; filter:none; }
+@media (min-width:768px) and (max-width:1120px) {
+ .site-nav { gap:13px; }
+ .site-nav a { font-size:8px; letter-spacing:.1em; }
+ .mr-moments__title { font-size:clamp(98px,13vw,175px); }
+}
+@media (max-width:767px) {
+ .site-shell .site-header { height:88px; padding:18px 23px; }
+ .site-brand__name { font-size:48px; }
+ .site-brand__sub { font-size:7px; }
+ .site-menu-toggle { position:relative; z-index:63; width:47px; height:47px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:7px; background:rgba(12,10,9,.15); color:#f5eddf; border:1px solid rgba(242,230,212,.5); cursor:pointer; }
+ .site-menu-toggle span { display:block; width:19px; height:1px; background:currentColor; transition:transform .3s; }
+ .site-header.is-menu-open .site-menu-toggle span:first-child { transform:translateY(4px) rotate(45deg); }
+ .site-header.is-menu-open .site-menu-toggle span:last-child { transform:translateY(-4px) rotate(-45deg); }
+ .site-nav { position:absolute; z-index:62; inset:0; min-height:100svh; display:flex; flex-direction:column; justify-content:center; align-items:stretch; gap:0; padding:105px 28px 45px; background:#211e19; visibility:hidden; opacity:0; transform:translateY(-15px); pointer-events:none; transition:opacity .35s,transform .35s,visibility .35s; }
+ .site-header.is-menu-open .site-nav { visibility:visible; opacity:1; transform:none; pointer-events:auto; }
+ .site-nav a { padding:16px 0; font:300 48px/1.05 'Cormorant Garamond',Georgia,serif; letter-spacing:-.035em; text-transform:none; border-bottom:1px solid rgba(247,235,220,.19); }
+ .site-nav a.site-nav__booking { margin-top:22px; text-align:center; padding:17px 20px; font:600 10px 'Manrope',sans-serif; letter-spacing:.15em; text-transform:uppercase; }
+ .mr-inner { width:calc(100% - 46px); }
+ .mr-opening { padding:124px 24px 64px; }
+ .mr-opening h2 { font-size:clamp(80px,19vw,134px); }
+ .mr-opening__bottom { display:block; margin-top:35px; }
+ .mr-opening__bottom p { font-size:13px; max-width:385px; }
+ .mr-opening__bottom .mr-link { margin-top:30px; }
+ .mr-opening__coords, .mr-opening__corner { display:none; }
+ .mr-manifesto__header { margin-bottom:55px; }
+ .mr-manifesto__grid { grid-template-columns:1fr; gap:45px; }
+ .mr-manifesto__headline { font-size:clamp(75px,16vw,120px); }
+ .mr-manifesto__aside { max-width:440px; }
+ .mr-moments { height:300svh; }
+ .mr-moments__meta { top:38px; }
+ .mr-moments__title { font-size:clamp(85px,19vw,142px); }
+ .mr-moments__headline { min-height:220px; }
+ .mr-moments__descs { height:140px; }
+ .mr-moments__desc { font-size:13px; }
+ .mr-moments__pagination { gap:9px; bottom:25px; }
+ .mr-moments__dot { font-size:8px; line-height:1.4; letter-spacing:.07em; display:block; }
+ .mr-moments__dot span { display:block; margin-bottom:5px; }
+ .mr-object { height:220svh; }
+ /* On mobile the text and the glass use separate grid rows: they cannot overlap. */
+ .mr-object__sticky { display:grid; grid-template-columns:minmax(0,1fr); grid-template-rows:max-content minmax(0,1fr); }
+ .mr-object__copy { grid-column:1; grid-row:1; height:auto; justify-content:flex-start; padding-top:clamp(50px,10svh,94px); padding-bottom:12px; }
+ .mr-object__copy h2 { font-size:clamp(80px,18vw,120px); margin:22px 0 15px; }
+ .mr-object__copy .mr-copy { max-width:330px; font-size:13px; }
+ .mr-object__canvas { grid-column:1; grid-row:2; position:relative; inset:auto; left:auto; right:auto; top:auto; width:100%; height:100%; min-height:0; }
+ /* The mobile cup starts just below the copy, instead of being centered in the empty row. */
+ .mr-object__fallback { grid-column:1; grid-row:2; position:relative; top:auto; left:auto; transform:none; align-self:start; justify-self:center; margin-top:clamp(8px,1.6svh,16px); height:min(100%,38svh,73vw); width:auto; aspect-ratio:1; max-width:100%; }
+ .mr-object__action { margin-top:15px; }
+ .mr-object__corner { bottom:23px; right:22px; font-size:8px; }
+ .mr-bistrot__top { display:block; }
+ .mr-bistrot__top .mr-title { font-size:clamp(82px,17vw,126px); }
+ .mr-bistrot__top .mr-copy { max-width:420px; margin-top:35px; }
+ .mr-bistrot__grid { grid-template-columns:1fr; gap:37px; }
+ .mr-bistrot__tab { padding:18px 0; }
+ .mr-bistrot__preview { min-height:510px; height:65svh; }
+ .mr-bistrot__preview-copy h3 { font-size:64px; }
+ .mr-bistrot__footer { display:block; }
+ .mr-bistrot__footer span { display:block; margin-top:12px; }
+ .mr-night { height:300svh; }
+ .mr-night__top { padding:27px 23px; }
+ .mr-night__slide-inner { padding:110px 24px 90px; }
+ .mr-night__slide-inner h2 { font-size:clamp(96px,20vw,150px); }
+ .mr-night__slide-inner p { font-size:13px; }
+ .mr-night__index { right:22px; bottom:26px; }
+ .mr-visit__heading { font-size:clamp(95px,21vw,160px); }
+ .mr-visit__grid { grid-template-columns:1fr; gap:37px; }
+ .mr-visit__unit p, .mr-visit__unit a { font-size:35px; }
+ .mr-footer { display:block; }
+ .mr-footer span { display:block; margin-top:20px; }
+}
+@media (max-width:380px) {
+ .mr-opening h2 { font-size:76px; }
+ .mr-moments__title { font-size:81px; }
+ .mr-object__copy h2 { font-size:76px; }
+ .mr-visit__heading { font-size:90px; }
+}
+/* Keep the mobile glass readable even on short screens, without text overlap. */
+@media (max-width:767px) and (max-height:700px) {
+ .mr-object__copy { padding-top:clamp(26px,6svh,48px); padding-bottom:8px; }
+ .mr-object__copy h2 { font-size:clamp(66px,16vw,83px); margin:13px 0 10px; }
+ .mr-object__action { margin-top:10px; }
+}
+@media (prefers-reduced-motion:reduce) {
+ [data-mr-reveal] { opacity:1;filter:none;transform:none;transition:none; }
+ .mr-moments__scene,.mr-moments__photo,.mr-moments__title,.mr-moments__desc,.mr-bistrot__image { transition:none; }
+ .mr-night__track { will-change:auto; }
+}
+
+  </style>
+</head>
+<body>
+  <main class="hero is-started" id="mary-hero" aria-label="Mary Cocktail & Lounge Bar">
+    <img
+      class="hero__photo"
+      src="https://images.pexels.com/photos/5863513/pexels-photo-5863513.jpeg?auto=compress&amp;cs=tinysrgb&amp;w=1920"
+      alt="" aria-hidden="true"
+      fetchpriority="high"
+      decoding="async"
+    >
+
+    <div class="frame" aria-hidden="true"></div>
+
+    <header class="topline" aria-label="Identità del locale">
+      <div class="topline__left"><span class="topline__rule" aria-hidden="true"></span><span>Un altro modo di vivere la sera</span></div>
+      <span class="topline__right">Cocktail &amp; Lounge Bar</span>
+    </header>
+
+    <section class="hero__wordmark" aria-labelledby="mary-title">
+      <h1 class="wordmark__title" id="mary-title">MARY</h1>
+      <div class="wordmark__subtitle" aria-label="Cocktail Bar e Bistrot">Cocktail Bar <span aria-hidden="true">·</span> Bistrot</div>
+    </section>
+
+    <div class="hero__description" aria-label="Benvenuti al Mary">
+      <div class="description__kicker">Benvenuti al Mary</div>
+      <p class="description__text">
+        Un luogo in cui il tempo rallenta, i cocktail diventano piccoli rituali
+        e ogni incontro trova la sua atmosfera. Tra sapori ricercati e dettagli
+        discreti, <em>la serata prende forma.</em>
+      </p>
+    </div>
+
+    <footer class="bottomline">
+      <div class="bottomline__left"><span class="bottomline__line" aria-hidden="true"></span><span>Il piacere di esserci</span></div>
+      <span class="bottomline__right">Mary / Cocktail &amp; Bistrot</span>
+    </footer>
+  </main>
+
+
+
+  <!-- THE EXISTING TWO-SCROLL INTRO ABOVE IS LEFT UNCHANGED. -->
+  <div class="site-shell" id="mary-site" inert aria-hidden="true" tabindex="-1">
+    <header class="site-header" id="mary-site-header">
+      <a class="site-brand" href="#mary-home" aria-label="MARY, torna all'inizio della pagina">
+        <span class="site-brand__name">MARY</span><span class="site-brand__sub">Café · Bistrot · Cocktail</span>
+      </a>
+      <button class="site-menu-toggle" type="button" aria-label="Apri menu di navigazione" aria-controls="mary-site-nav" aria-expanded="false"><span></span><span></span></button>
+      <nav class="site-nav" id="mary-site-nav" aria-label="Navigazione principale">
+        <a href="#mary-storia">Il Mary</a>
+        <a href="#momenti">I momenti</a>
+        <a href="#cocktail">Cocktail</a>
+        <a href="#bistrot">Bistrot</a>
+        <a href="#atmosfera">Atmosfera</a>
+        <a href="#contatti" class="site-nav__booking">Vieni a trovarci ↗</a>
+      </nav>
+    </header>
+    <main id="mary-home">
+      <!-- The first screen uses ONLY the existing image behind the site; absolutely no duplicate image or new tint. -->
+      <section class="mr-opening" aria-labelledby="site-title">
+        <div class="mr-opening__content">
+          <p class="mr-label mr-opening__eyebrow">Olbia · Corso Umberto I · 125</p>
+          <h2 id="site-title">Ogni momento<br><em>ha il suo Mary.</em></h2>
+          <div class="mr-opening__bottom">
+            <p class="mr-copy">Dal primo caffè all'ultimo brindisi. Un luogo da vivere senza fretta, nel cuore di Olbia.</p>
+            <a href="#mary-storia" class="mr-link">Entra nel Mary <span aria-hidden="true">↗</span></a>
+          </div>
+        </div>
+        <span class="mr-opening__coords" aria-hidden="true">40°55' N &nbsp; / &nbsp; 09°30' E</span>
+        <span class="mr-opening__corner" aria-hidden="true">SCOPRI ↓</span>
+      </section>
+
+      <section class="mr-manifesto" id="mary-storia" aria-labelledby="manifesto-title">
+        <div class="mr-inner">
+          <div class="mr-manifesto__header mr-label" data-mr-reveal><span>01 / Il carattere di un luogo</span><span>MARY — Olbia, Sardegna</span></div>
+          <div class="mr-manifesto__grid">
+            <h2 class="mr-manifesto__headline" id="manifesto-title" data-mr-reveal>Non è solo<br>un posto.<br><em>È un momento.</em></h2>
+            <div class="mr-manifesto__aside" data-mr-reveal>
+              <p class="mr-copy">In centro a Olbia, tra Corso Umberto e Piazza Regina Margherita. Un caffè, un piatto da condividere, il suono dei bicchieri. MARY cambia con il ritmo della giornata, senza perdere la propria anima.</p>
+              <a class="mr-link" href="#momenti">Vivi la giornata <span aria-hidden="true">↗</span></a>
+            </div>
+          </div>
+        </div>
+        <div class="mr-manifesto__stamp" aria-hidden="true">Mary.</div>
+      </section>
+
+      <!-- MULTI-SCROLL FILM 01: three full-height chapters; fixed viewport, discrete cinematic crossfades. -->
+      <section class="mr-moments" id="momenti" aria-label="Un giorno al Mary in tre scene">
+        <div class="mr-moments__sticky">
+          <div class="mr-moments__progress" aria-hidden="true"></div>
+          <div class="mr-moments__scene is-active" data-moment-scene="0">
+            <img class="mr-moments__photo" src="https://images.unsplash.com/photo-1509042239860-f550ce710b93?auto=format&amp;fit=crop&amp;w=1800&amp;q=82" alt="Caffè caldo, fotografia di repertorio" loading="lazy" decoding="async"><div class="mr-moments__shade"></div>
+          </div>
+          <div class="mr-moments__scene" data-moment-scene="1">
+            <img class="mr-moments__photo" src="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&amp;fit=crop&amp;w=1800&amp;q=82" alt="Ambiente bistrot, fotografia di repertorio" loading="lazy" decoding="async"><div class="mr-moments__shade"></div>
+          </div>
+          <div class="mr-moments__scene" data-moment-scene="2">
+            <img class="mr-moments__photo" src="https://images.unsplash.com/photo-1544145945-f90425340c7e?auto=format&amp;fit=crop&amp;w=1800&amp;q=82" alt="Cocktail serale, fotografia di repertorio" loading="lazy" decoding="async"><div class="mr-moments__shade"></div>
+          </div>
+          <div class="mr-inner mr-moments__content">
+            <div class="mr-moments__meta"><span class="mr-label">02 / Tre momenti, un luogo</span><span class="mr-moments__current" id="mary-moment-counter">01 / 03</span></div>
+            <div class="mr-moments__headline">
+              <h2 class="mr-moments__title is-active" data-moment-title="0">Il primo<br><em>caffè.</em></h2>
+              <h2 class="mr-moments__title" data-moment-title="1">Il gusto<br><em>di fermarsi.</em></h2>
+              <h2 class="mr-moments__title" data-moment-title="2">L'ora del<br><em>brindisi.</em></h2>
+            </div>
+            <div class="mr-moments__descs">
+              <p class="mr-copy mr-moments__desc is-active" data-moment-desc="0">Un inizio senza fretta. La colazione, il profumo del caffè, la città che si sveglia.</p>
+              <p class="mr-copy mr-moments__desc" data-moment-desc="1">La pausa giusta, i sapori mediterranei, il piacere di sedersi a tavola.</p>
+              <p class="mr-copy mr-moments__desc" data-moment-desc="2">Cocktail, aperitivi, conversazioni che continuano. La sera ha un altro ritmo.</p>
+            </div>
+            <div class="mr-moments__pagination" aria-hidden="true">
+              <div class="mr-moments__dot is-active" data-moment-dot="0"><span>01</span> Il mattino</div>
+              <div class="mr-moments__dot" data-moment-dot="1"><span>02</span> Il bistrot</div>
+              <div class="mr-moments__dot" data-moment-dot="2"><span>03</span> L'aperitivo</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- WEBGL / THREE.JS: actual 3D glass sculpture; lazy initialization and static fallback. -->
+      <section class="mr-object" id="cocktail" aria-label="Cocktail, il rituale del Mary">
+        <div class="mr-object__sticky">
+          <div class="mr-object__fallback" aria-hidden="true">
+            <svg class="mr-object__fallback-glass" viewBox="0 0 320 390" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <defs><linearGradient id="mary-glass-line" x1="10" y1="0" x2="300" y2="250" gradientUnits="userSpaceOnUse"><stop stop-color="#f6e5cb" stop-opacity=".12"/><stop offset=".34" stop-color="#faf0dd" stop-opacity=".9"/><stop offset=".65" stop-color="#ad9074" stop-opacity=".3"/><stop offset="1" stop-color="#ebd4b7" stop-opacity=".8"/></linearGradient><linearGradient id="mary-wine-fill" x1="0" y1="155" x2="0" y2="270" gradientUnits="userSpaceOnUse"><stop stop-color="#dcc19a" stop-opacity=".66"/><stop offset="1" stop-color="#b09572" stop-opacity=".52"/></linearGradient></defs>
+              <path d="M36 102C41 184 91 251 160 262C229 251 279 184 284 102" stroke="url(#mary-glass-line)" stroke-width="2"/>
+              <path d="M36 102C72 92 248 92 284 102" stroke="#ead9c2" stroke-opacity=".76" stroke-width="1.5"/>
+              <path d="M57 167Q160 188 263 167C246 213 204 244 160 247C116 244 74 213 57 167Z" fill="url(#mary-wine-fill)"/>
+              <ellipse cx="160" cy="167" rx="103" ry="10" stroke="#e2c39a" stroke-opacity=".4"/>
+              <path d="M160 262V353M160 353C123 361 108 365 105 369H215C212 365 197 361 160 353Z" stroke="url(#mary-glass-line)" stroke-width="2"/>
+              <path d="M99 107C98 88 123 74 138 90C153 106 135 124 120 116" stroke="#caba9c" stroke-width="3" stroke-linecap="round" opacity=".85"/>
+            </svg>
+          </div>
+          <div class="mr-object__canvas" id="mary-webgl" aria-hidden="true"></div>
+          <div class="mr-object__grain" aria-hidden="true"></div>
+          <div class="mr-inner mr-object__copy">
+            <p class="mr-label">03 / The cocktail ritual</p>
+            <h2>Il piacere<br>di un <em>gesto.</em></h2>
+            <p class="mr-copy">Un calice, un incontro, un momento da assaporare. I cocktail e gli aperitivi diventano parte della serata.</p>
+            <button type="button" class="mr-object__action" id="mary-glass-spin" aria-label="Fai ruotare il calice tridimensionale">Ruota il calice &nbsp; ↗</button>
+          </div>
+          <span class="mr-object__corner">Un rituale da scoprire · MARY</span>
+        </div>
+      </section>
+
+      <!-- EDITORIAL BISTROT / CLICK OR KEYBOARD TO CHANGE THE CHAPTER -->
+      <section class="mr-bistrot" id="bistrot" aria-labelledby="bistrot-heading">
+        <div class="mr-inner">
+          <div class="mr-bistrot__top">
+            <div data-mr-reveal><p class="mr-label">04 / Il bistrot</p><h2 class="mr-title" id="bistrot-heading">Scegli il<br><em>tuo momento.</em></h2></div>
+            <p class="mr-copy" data-mr-reveal>Dalla colazione alla sera: esplora le diverse anime di MARY. Le proposte effettive possono variare nel corso della giornata.</p>
+          </div>
+          <div class="mr-bistrot__grid">
+            <div class="mr-bistrot__tabs" role="tablist" aria-label="Esplora le proposte di MARY" data-mr-reveal>
+              <button class="mr-bistrot__tab" role="tab" id="mary-tab-0" aria-controls="mary-tabpanel" aria-selected="true" tabindex="0" data-food-tab="0"><span>01</span><span>Colazione</span><span>↗</span></button>
+              <button class="mr-bistrot__tab" role="tab" id="mary-tab-1" aria-controls="mary-tabpanel" aria-selected="false" tabindex="-1" data-food-tab="1"><span>02</span><span>Cucina</span><span>↗</span></button>
+              <button class="mr-bistrot__tab" role="tab" id="mary-tab-2" aria-controls="mary-tabpanel" aria-selected="false" tabindex="-1" data-food-tab="2"><span>03</span><span>Aperitivo</span><span>↗</span></button>
+            </div>
+            <div class="mr-bistrot__preview" id="mary-tabpanel" role="tabpanel" aria-labelledby="mary-tab-0" tabindex="0" data-mr-reveal>
+              <img class="mr-bistrot__image is-active" data-food-image="0" src="https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?auto=format&amp;fit=crop&amp;w=1350&amp;q=82" alt="Caffetteria, fotografia illustrativa" loading="lazy" decoding="async">
+              <img class="mr-bistrot__image" data-food-image="1" src="https://images.unsplash.com/photo-1414235077428-338989a2e8c0?auto=format&amp;fit=crop&amp;w=1350&amp;q=82" alt="Tavola bistrot, fotografia illustrativa" loading="lazy" decoding="async">
+              <img class="mr-bistrot__image" data-food-image="2" src="https://images.unsplash.com/photo-1544145945-f90425340c7e?auto=format&amp;fit=crop&amp;w=1350&amp;q=82" alt="Cocktail, fotografia illustrativa" loading="lazy" decoding="async">
+              <div class="mr-bistrot__preview-copy" aria-live="polite">
+                <span class="mr-label" id="mary-food-kicker">Il mattino / 01</span>
+                <h3 id="mary-food-title">Il primo caffè.</h3>
+                <p id="mary-food-desc">Un espresso, un cappuccino, una colazione da gustare con calma.</p>
+              </div>
+            </div>
+          </div>
+          <div class="mr-bistrot__footer mr-label"><span>MARY / Café &amp; Bistrot</span><span>Colazione · Cucina · Aperitivo</span></div>
+        </div>
+      </section>
+
+      <!-- MULTI-SCROLL FILM 02: horizontal travel from ordinary vertical scrolling, no wheel interception. -->
+      <section class="mr-night" id="atmosfera" aria-label="L'atmosfera del Mary, racconto in tre panorami">
+        <div class="mr-night__sticky">
+          <div class="mr-night__top"><span class="mr-label">05 / La città, la sera</span><span class="mr-label">Scorri per esplorare →</span></div>
+          <div class="mr-night__track" id="mary-night-track">
+            <article class="mr-night__slide">
+              <img src="https://images.unsplash.com/photo-1514933651103-005eec06c04b?auto=format&amp;fit=crop&amp;w=1900&amp;q=82" alt="Bar serale, fotografia di repertorio" loading="lazy" decoding="async">
+              <div class="mr-night__slide-inner"><span class="mr-label">Atto primo / L'incontro</span><h2>La<br>piazza.</h2><p class="mr-copy">Un tavolo, le luci di Olbia, il piacere di ritrovarsi in centro.</p></div>
+            </article>
+            <article class="mr-night__slide">
+              <img src="https://images.unsplash.com/photo-1515003197210-e0cd71810b5f?auto=format&amp;fit=crop&amp;w=1900&amp;q=82" alt="Tavolo conviviale, fotografia di repertorio" loading="lazy" decoding="async">
+              <div class="mr-night__slide-inner"><span class="mr-label">Atto secondo / La convivialità</span><h2>Le<br>persone.</h2><p class="mr-copy">La conversazione si allunga, il momento diventa un ricordo.</p></div>
+            </article>
+            <article class="mr-night__slide">
+              <img src="https://images.unsplash.com/photo-1470337458703-46ad1756a187?auto=format&amp;fit=crop&amp;w=1900&amp;q=82" alt="Atmosfera cocktail bar serale, fotografia di repertorio" loading="lazy" decoding="async">
+              <div class="mr-night__slide-inner"><span class="mr-label">Atto terzo / Dopo il tramonto</span><h2>La<br>notte.</h2><p class="mr-copy">Tra cocktail, aperitivi e talvolta musica dal vivo, c'è sempre un motivo per restare.</p></div>
+            </article>
+          </div>
+          <div class="mr-night__index" id="mary-night-index" aria-hidden="true">01 — 03</div>
+          <div class="mr-night__progress" aria-hidden="true"></div>
+        </div>
+      </section>
+
+      <section class="mr-visit" id="contatti" aria-labelledby="mary-visit-heading">
+        <div class="mr-inner">
+          <p class="mr-label" data-mr-reveal>06 / Il prossimo incontro</p>
+          <h2 class="mr-visit__heading" id="mary-visit-heading" data-mr-reveal>Ci vediamo<br><em>al Mary.</em></h2>
+          <div class="mr-visit__grid">
+            <div class="mr-visit__unit" data-mr-reveal><h3>Dove</h3><p>Corso Umberto I, 125<br>07026 Olbia · Sardegna</p></div>
+            <div class="mr-visit__unit" data-mr-reveal><h3>Parliamone</h3><p><a href="tel:+3907891710687">+39 0789<br>171 0687</a></p><p class="mr-visit__note">Chiama per informazioni e disponibilità.</p></div>
+            <div class="mr-visit__unit" data-mr-reveal><h3>Seguici</h3><p><a href="https://www.instagram.com/marybistrotolbia/" target="_blank" rel="noopener noreferrer">Instagram ↗</a></p><p class="mr-visit__note">Controlla il profilo per le novità.</p></div>
+          </div>
+          <div class="mr-visit__actions" data-mr-reveal>
+            <a class="mr-button" href="https://www.google.com/maps/search/?api=1&amp;query=Mary%20Cafe%20Bistrot%20Corso%20Umberto%20I%20125%20Olbia" target="_blank" rel="noopener noreferrer">Come raggiungerci <span aria-hidden="true">↗</span></a>
+            <a class="mr-button mr-button--outline" href="tel:+3907891710687">Chiamaci <span aria-hidden="true">↗</span></a>
+          </div>
+          <footer class="mr-footer"><strong>MARY.</strong><span>Café · Cocktail · Bistrot<br>Olbia, Sardegna · <a href="#mary-home" style="color:inherit">Torna all'inizio ↑</a></span></footer>
+        </div>
+      </section>
+    </main>
+  </div>
+
+<script>
+    (() => {
+      'use strict';
+      const hero = document.getElementById('mary-hero');
+      const site = document.getElementById('mary-site');
+      if (!hero || !site) return;
+
+      // Due soli gesti di scroll, ciascuno con un'animazione completa:
+      // 0: solo logo; 1: logo in alto + descrizione; 2: sito navigabile.
+      // Il secondo gesto esegue due movimenti CONSECUTIVI, mai sovrapposti:
+      // prima escono logo e descrizione, poi appare la pagina fullscreen tramite opacità.
+      const wordmark = hero.querySelector('.hero__wordmark');
+      const description = hero.querySelector('.hero__description');
+      const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      let scene = 0;
+      let busy = false;
+      // Conserva un eventuale secondo gesto ricevuto mentre la prima scena
+      // sta ancora terminando; non richiedere uno scroll aggiuntivo.
+      let pendingDirection = 0;
+      let wheelLastEventAt = -Infinity;
+      let wheelLastDirection = 0;
+      const WHEEL_GESTURE_GAP = 140;
+
+      function requestStep(direction) {
+        if (busy) {
+          // Un gesto distinto durante un'animazione viene eseguito appena finisce.
+          pendingDirection = direction;
+          return;
+        }
+        go(direction);
+      }
+
+      const setPageAccess = (enabled) => {
+        site.classList.toggle('is-ready', enabled);
+        site.toggleAttribute('inert', !enabled);
+        site.setAttribute('aria-hidden', enabled ? 'false' : 'true');
+      };
+
+      // Attende la proprietà effettivamente animata: transform per i testi,
+      // opacity per la pagina fullscreen. Nessun avanzamento automatico.
+      const waitForTransition = (element, property, duration) => new Promise((resolve) => {
+        let finished = false;
+        let fallback;
+        const finish = () => {
+          if (finished) return;
+          finished = true;
+          element.removeEventListener('transitionend', onEnd);
+          window.clearTimeout(fallback);
+          resolve();
+        };
+        const onEnd = (event) => {
+          if (event.target === element && event.propertyName === property) finish();
+        };
+        element.addEventListener('transitionend', onEnd);
+        fallback = window.setTimeout(finish, reduceMotion ? 45 : duration + 180);
+      });
+      const waitForTransform = (element, duration) => waitForTransition(element, 'transform', duration);
+      const waitForOpacity = (element, duration) => waitForTransition(element, 'opacity', duration);
+
+      async function go(direction) {
+        if (busy) return;
+        const target = Math.max(0, Math.min(2, scene + direction));
+        if (target === scene) return;
+        busy = true;
+        scene = target;
+
+        try {
+          if (direction > 0 && scene === 1) {
+            // PRIMO scroll: il logo sale e il testo entra contemporaneamente.
+            const logoDone = waitForTransform(wordmark, 1450);
+            const copyDone = waitForTransform(description, 1550);
+            hero.classList.add('is-lifted', 'is-copy-visible');
+            await Promise.all([logoDone, copyDone]);
+          } else if (direction > 0 && scene === 2) {
+            // SECONDO scroll: entrambi i testi devono uscire completamente.
+            const logoGone = waitForTransform(wordmark, 660);
+            const copyGone = waitForTransform(description, 660);
+            hero.classList.add('is-exiting');
+            await Promise.all([logoGone, copyGone]);
+
+            // Solo DOPO la loro uscita inizia la dissolvenza della pagina fullscreen.
+            const pageOpen = waitForOpacity(site, 1120);
+            site.classList.add('is-revealing');
+            await pageOpen;
+            setPageAccess(true);
+          } else if (direction < 0 && scene === 1) {
+            // Scroll inverso: stessa durata, distanza e intensità dell'andata,
+            // ripercorrendo in ordine inverso le due parti della transizione.
+            setPageAccess(false);
+            site.classList.add('is-returning');
+            const pageClosed = waitForOpacity(site, 1120);
+            site.classList.remove('is-revealing');
+            await pageClosed;
+            site.classList.remove('is-returning');
+
+            hero.classList.add('is-returning');
+            const logoBack = waitForTransform(wordmark, 660);
+            const copyBack = waitForTransform(description, 660);
+            hero.classList.remove('is-exiting');
+            await Promise.all([logoBack, copyBack]);
+            hero.classList.remove('is-returning');
+          } else if (direction < 0 && scene === 0) {
+            // Ritorno all'inizio: stessi tempi e stesse traiettorie dello scroll 1.
+            // Le transizioni base sono già bidirezionali, senza override rapidi.
+            const logoHome = waitForTransform(wordmark, 1450);
+            const copyHidden = waitForTransform(description, 1550);
+            hero.classList.remove('is-lifted', 'is-copy-visible');
+            await Promise.all([logoHome, copyHidden]);
+          }
+        } finally {
+          busy = false;
+          if (pendingDirection !== 0) {
+            const nextDirection = pendingDirection;
+            pendingDirection = 0;
+            // Il gesto accodato deve comunque rispettare i confini 0–2.
+            if (scene + nextDirection >= 0 && scene + nextDirection <= 2) {
+              requestStep(nextDirection);
+            }
+          }
+        }
+      }
+
+      // La pagina finale ha uno scroll naturale. Tornando al suo inizio,
+      // un gesto verso l'alto riporta alla scena cinematografica precedente.
+      function canReverseFromPage() {
+        return site.scrollTop <= 2;
+      }
+
+      window.addEventListener('wheel', (event) => {
+        if (Math.abs(event.deltaY) < 3 || event.ctrlKey) return;
+        const direction = event.deltaY > 0 ? 1 : -1;
+        // Una raffica di eventi della stessa rotellina/trackpad = un gesto.
+        // Un nuovo gesto, anche se la scena è busy, non va perso.
+        const now = performance.now();
+        const newGesture = now - wheelLastEventAt > WHEEL_GESTURE_GAP ||
+                           direction !== wheelLastDirection;
+        wheelLastEventAt = now;
+        wheelLastDirection = direction;
+        if (scene === 2 && !busy && (direction > 0 || !canReverseFromPage())) return;
+        event.preventDefault();
+        if (newGesture) requestStep(direction);
+      }, { passive: false });
+
+      // Un movimento touch equivale a un singolo step, non a un trascinamento dei testi.
+      let touchStartY = null;
+      let touchStartX = null;
+      let touchStartedAtPageTop = false;
+      window.addEventListener('touchstart', (event) => {
+        if (event.touches.length !== 1) return;
+        touchStartY = event.touches[0].clientY;
+        touchStartX = event.touches[0].clientX;
+        touchStartedAtPageTop = canReverseFromPage();
+      }, { passive: true });
+      window.addEventListener('touchmove', (event) => {
+        if (scene !== 2 || busy) {
+          if (event.cancelable) event.preventDefault();
+        } else if (touchStartY !== null && touchStartedAtPageTop &&
+                   event.touches[0].clientY > touchStartY + 8 &&
+                   Math.abs(event.touches[0].clientY - touchStartY) >
+                   Math.abs(event.touches[0].clientX - touchStartX)) {
+          if (event.cancelable) event.preventDefault();
+        }
+      }, { passive: false });
+      window.addEventListener('touchend', (event) => {
+        if (touchStartY === null || !event.changedTouches.length) return;
+        const dy = event.changedTouches[0].clientY - touchStartY;
+        const dx = event.changedTouches[0].clientX - touchStartX;
+        touchStartY = touchStartX = null;
+        if (Math.abs(dy) < 36 || Math.abs(dy) < Math.abs(dx) * 1.25) return;
+        const direction = dy < 0 ? 1 : -1;
+        if (scene === 2 && !busy && (direction > 0 || !touchStartedAtPageTop)) return;
+        requestStep(direction);
+      }, { passive: true });
+      window.addEventListener('touchcancel', () => { touchStartY = touchStartX = null; });
+
+      // Accessibilità: anche tastiera e PageUp/PageDown seguono gli step.
+      window.addEventListener('keydown', (event) => {
+        if (event.altKey || event.ctrlKey || event.metaKey) return;
+        if (event.target.closest?.('input, textarea, select, [contenteditable="true"]')) return;
+        const down = event.key === 'ArrowDown' || event.key === 'PageDown' ||
+                     (event.key === ' ' && !event.shiftKey);
+        const up = event.key === 'ArrowUp' || event.key === 'PageUp' ||
+                   (event.key === ' ' && event.shiftKey);
+        if (!down && !up) return;
+        const direction = down ? 1 : -1;
+        if (scene === 2 && !busy && (direction > 0 || !canReverseFromPage())) return;
+        event.preventDefault();
+        requestStep(direction);
+      });
+
+      // Nessuna riproduzione automatica: stato iniziale già visibile dall'HTML.
+      setPageAccess(false);
+    })();
+  </script>
+
+<script>
+/* MARY / ACT III — all interactions scoped to the site. The cinematic intro's own
+   scroll controller is intentionally unchanged. Wheel/touch capture below applies
+   only inside chapter 02 to make every gesture advance exactly one moment. */
+(() => {
+  'use strict';
+  const site = document.getElementById('mary-site');
+  const header = document.getElementById('mary-site-header');
+  if (!site || !header) return;
+  const toggle = header.querySelector('.site-menu-toggle');
+  const nav = header.querySelector('.site-nav');
+  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+  const clamp = (v, min=0, max=1) => Math.min(max, Math.max(min, v));
+  const moments = site.querySelector('.mr-moments');
+  const night = site.querySelector('.mr-night');
+  const object = site.querySelector('.mr-object');
+  const count = document.getElementById('mary-moment-counter');
+  const nightIndex = document.getElementById('mary-night-index');
+  let activeMoment = -1;
+  let activeNight = -1;
+  let objectProgress = 0;
+  let scrollPending = false;
+
+  function closeMenu() {
+    header.classList.remove('is-menu-open');
+    toggle.setAttribute('aria-expanded','false');
+    toggle.setAttribute('aria-label','Apri menu di navigazione');
+  }
+  toggle.addEventListener('click', () => {
+    const open = header.classList.toggle('is-menu-open');
+    toggle.setAttribute('aria-expanded',String(open));
+    toggle.setAttribute('aria-label',open?'Chiudi menu di navigazione':'Apri menu di navigazione');
+  });
+  nav.querySelectorAll('a').forEach(link=>link.addEventListener('click',closeMenu));
+  site.addEventListener('keydown',e => {
+    if(e.key==='Escape' && header.classList.contains('is-menu-open')) {closeMenu();toggle.focus();}
+  });
+  const mq = window.matchMedia('(min-width: 768px)');
+  if (mq.addEventListener) mq.addEventListener('change',closeMenu);
+
+  // Gentle reveal with a fixed scroller root; load instantly for reduced motion.
+  const reveal = site.querySelectorAll('[data-mr-reveal]');
+  if (!('IntersectionObserver' in window) || reducedMotion.matches) {
+    reveal.forEach(el=>el.classList.add('is-inview'));
+  } else {
+    const observer = new IntersectionObserver(entries=>{
+      entries.forEach(entry=>{if(entry.isIntersecting){entry.target.classList.add('is-inview');observer.unobserve(entry.target);}});
+    },{root:site,rootMargin:'0px 0px -5% 0px',threshold:.05});
+    reveal.forEach(el=>observer.observe(el));
+  }
+
+  function sectionProgress(el) {
+    const track = el.offsetHeight - site.clientHeight;
+    if (track <= 0) return 0;
+    return clamp((site.getBoundingClientRect().top - el.getBoundingClientRect().top)/track);
+  }
+  function updateScene() {
+    scrollPending = false;
+    // Tre momenti uses one gesture per scene; it is deliberately NOT scrubbed
+    // by scroll distance. The second cinematic film below remains unchanged.
+    const np=sectionProgress(night);
+    night.style.setProperty('--night-progress',np.toFixed(5));
+    const ni=Math.min(2,Math.floor(np*3));
+    if(ni!==activeNight) {activeNight=ni;nightIndex.textContent=`0${ni+1} — 03`;}
+    objectProgress=sectionProgress(object);
+  }
+  site.addEventListener('scroll',()=>{
+    if(!scrollPending){scrollPending=true;requestAnimationFrame(updateScene);}
+  },{passive:true});
+  window.addEventListener('resize',()=>requestAnimationFrame(updateScene),{passive:true});
+  updateScene();
+
+  // 05 / La città, la sera: step-based navigation ONLY while the existing
+  // sticky filmstrip is fully on screen. Its 320svh height, natural approach,
+  // natural departure and horizontal images remain untouched.
+  const NIGHT_STEP_MS=760;
+  let nightMoving=false;
+  let nightMoveFrame=0;
+  let nightStopUntil=0;
+  let nightWheelAt=-Infinity;
+  let nightWheelDir=0;
+  let nightTouch=null;
+
+  function nightStops() {
+    const root=site.getBoundingClientRect();
+    const rect=night.getBoundingClientRect();
+    const start=site.scrollTop + rect.top - root.top;
+    const travel=Math.max(0,night.offsetHeight-site.clientHeight);
+    return {start,end:start+travel,travel};
+  }
+  function nightAtPinnedPosition(y,b) {
+    // At exactly the first/last frame the section continues with normal
+    // scrolling if the gesture points outward. Do not alter entry or exit.
+    return b.travel>2 && y>=b.start-2 && y<=b.end+2;
+  }
+  function nightNearestStep(y,b) {
+    return Math.max(0,Math.min(2,Math.round((y-b.start)/b.travel*2)));
+  }
+  function nightAnimateScroll(target) {
+    nightMoving=true;
+    cancelAnimationFrame(nightMoveFrame);
+    const initial=site.scrollTop;
+    const startAt=performance.now();
+    const priorBehavior=site.style.scrollBehavior;
+    site.style.scrollBehavior='auto';
+    const finish=()=>{
+      site.scrollTop=target;
+      site.style.scrollBehavior=priorBehavior;
+      nightMoving=false;
+      nightStopUntil=performance.now()+170;
+      updateScene();
+    };
+    if(reducedMotion.matches || Math.abs(target-initial)<.6){finish();return;}
+    const frame=now=>{
+      const t=Math.min(1,(now-startAt)/NIGHT_STEP_MS);
+      const eased=t<.5?4*t*t*t:1-Math.pow(-2*t+2,3)/2;
+      site.scrollTop=initial+(target-initial)*eased;
+      if(t<1)nightMoveFrame=requestAnimationFrame(frame);
+      else finish();
+    };
+    nightMoveFrame=requestAnimationFrame(frame);
+  }
+  function nightStep(direction) {
+    if(nightMoving)return true;
+    const b=nightStops(),y=site.scrollTop;
+    if(!nightAtPinnedPosition(y,b))return false;
+    const current=nightNearestStep(y,b);
+    const next=current+direction;
+    if(next<0 || next>2)return false; // preserve native entry/exit
+    nightAnimateScroll(b.start+(next/2)*b.travel);
+    return true;
+  }
+  site.addEventListener('wheel',event=>{
+    if(!site.classList.contains('is-ready') || event.ctrlKey ||
+       header.classList.contains('is-menu-open') || Math.abs(event.deltaY)<3)return;
+    const direction=Math.sign(event.deltaY);
+    const now=performance.now();
+    const b=nightStops(),y=site.scrollTop;
+    if(nightMoving){event.preventDefault();return;}
+    if(!nightAtPinnedPosition(y,b))return;
+    const current=nightNearestStep(y,b);
+    const next=current+direction;
+    // Stop residual wheel inertia from turning the final reveal into an exit.
+    if(now<nightStopUntil){event.preventDefault();return;}
+    if(next<0 || next>2)return; // preserve the previous natural exit
+    event.preventDefault();
+    const fresh=now-nightWheelAt>175 || direction!==nightWheelDir;
+    nightWheelAt=now;
+    nightWheelDir=direction;
+    if(fresh)nightStep(direction);
+  },{capture:true,passive:false});
+
+  // On mobile, intercept a swipe only once the filmstrip is pinned. Its
+  // natural approach/departure remains native, without scroll jumps.
+  site.addEventListener('touchstart',event=>{
+    if(event.touches.length!==1 || !site.classList.contains('is-ready'))return;
+    nightTouch={x:event.touches[0].clientX,y:event.touches[0].clientY,
+      captured:false,decided:false};
+  },{capture:true,passive:true});
+  site.addEventListener('touchmove',event=>{
+    const gesture=nightTouch;
+    if(!gesture || event.touches.length!==1)return;
+    const dx=event.touches[0].clientX-gesture.x;
+    const dy=event.touches[0].clientY-gesture.y;
+    if(gesture.captured || nightMoving){
+      if(event.cancelable)event.preventDefault();
+      return;
+    }
+    if(gesture.decided || Math.abs(dy)<12 || Math.abs(dy)<Math.abs(dx)*1.2)return;
+    gesture.decided=true;
+    const b=nightStops();
+    const y=site.scrollTop;
+    if(!nightAtPinnedPosition(y,b))return;
+    const direction=dy<0?1:-1;
+    const current=nightNearestStep(y,b);
+    if(current+direction<0 || current+direction>2)return;
+    if(event.cancelable)event.preventDefault();
+    gesture.captured=true;
+    nightStep(direction);
+  },{capture:true,passive:false});
+  site.addEventListener('touchend',()=>{nightTouch=null;},{capture:true,passive:true});
+  site.addEventListener('touchcancel',()=>{nightTouch=null;},{capture:true,passive:true});
+
+  // 02 / Tre momenti — same native-entry/native-exit sticky model as 05.
+  // The section scrolls naturally into and out of view. Only the two INSIDE
+  // transitions are stepped (a gesture per chapter), matching 'La città, la sera'.
+  function showMoment(index) {
+    index=Math.max(0,Math.min(2,index));
+    if(index===activeMoment)return;
+    activeMoment=index;
+    moments.querySelectorAll('[data-moment-scene]').forEach(el=>el.classList.toggle('is-active',Number(el.dataset.momentScene)===index));
+    moments.querySelectorAll('[data-moment-title]').forEach(el=>el.classList.toggle('is-active',Number(el.dataset.momentTitle)===index));
+    moments.querySelectorAll('[data-moment-desc]').forEach(el=>el.classList.toggle('is-active',Number(el.dataset.momentDesc)===index));
+    moments.querySelectorAll('[data-moment-dot]').forEach(el=>el.classList.toggle('is-active',Number(el.dataset.momentDot)===index));
+    count.textContent=`0${index+1} / 03`;
+    moments.style.setProperty('--moments-progress',String(index/2));
+  }
+  showMoment(0);
+
+  const MOMENT_STEP_MS=760; // matches section 05
+  let momentMoving=false;
+  let momentMoveFrame=0;
+  let momentStopUntil=0;
+  let momentWheelAt=-Infinity;
+  let momentWheelDir=0;
+  let momentTouch=null;
+
+  function momentStops() {
+    const root=site.getBoundingClientRect();
+    const rect=moments.getBoundingClientRect();
+    const start=site.scrollTop + rect.top - root.top;
+    const travel=Math.max(0,moments.offsetHeight-site.clientHeight);
+    return {start,end:start+travel,travel};
+  }
+  function momentAtPinnedPosition(y,b) {
+    return b.travel>2 && y>=b.start-2 && y<=b.end+2;
+  }
+  function momentNearestStep(y,b) {
+    return Math.max(0,Math.min(2,Math.round((y-b.start)/b.travel*2)));
+  }
+  // Update the displayed chapter from the real scroll position (including
+  // normal approaches, exits, anchor navigation and reverse travel).
+  function syncMomentWithScroll() {
+    const b=momentStops();
+    if(b.travel>2)showMoment(momentNearestStep(site.scrollTop,b));
+  }
+  let momentSyncQueued=false;
+  site.addEventListener('scroll',()=>{
+    if(momentSyncQueued)return;
+    momentSyncQueued=true;
+    requestAnimationFrame(()=>{momentSyncQueued=false;syncMomentWithScroll();});
+  },{passive:true});
+  window.addEventListener('resize',()=>requestAnimationFrame(syncMomentWithScroll),{passive:true});
+  syncMomentWithScroll();
+
+  function momentAnimateScroll(target) {
+    momentMoving=true;
+    cancelAnimationFrame(momentMoveFrame);
+    const initial=site.scrollTop;
+    const startAt=performance.now();
+    const priorBehavior=site.style.scrollBehavior;
+    site.style.scrollBehavior='auto';
+    const finish=()=>{
+      site.scrollTop=target;
+      site.style.scrollBehavior=priorBehavior;
+      momentMoving=false;
+      momentStopUntil=performance.now()+170;
+      syncMomentWithScroll();
+    };
+    if(reducedMotion.matches || Math.abs(target-initial)<.6){finish();return;}
+    const frame=now=>{
+      const t=Math.min(1,(now-startAt)/MOMENT_STEP_MS);
+      const eased=t<.5?4*t*t*t:1-Math.pow(-2*t+2,3)/2;
+      site.scrollTop=initial+(target-initial)*eased;
+      if(t<1)momentMoveFrame=requestAnimationFrame(frame);
+      else finish();
+    };
+    momentMoveFrame=requestAnimationFrame(frame);
+  }
+  function momentStep(direction) {
+    if(momentMoving)return true;
+    const b=momentStops(),y=site.scrollTop;
+    if(!momentAtPinnedPosition(y,b))return false;
+    const current=momentNearestStep(y,b);
+    const next=current+direction;
+    if(next<0 || next>2)return false; // preserve the native entry/exit, like 05
+    momentAnimateScroll(b.start+(next/2)*b.travel);
+    return true;
+  }
+  site.addEventListener('wheel',event=>{
+    if(!site.classList.contains('is-ready') || event.ctrlKey ||
+       header.classList.contains('is-menu-open') || Math.abs(event.deltaY)<3)return;
+    const direction=Math.sign(event.deltaY);
+    const now=performance.now();
+    const b=momentStops(),y=site.scrollTop;
+    if(momentMoving){event.preventDefault();return;}
+    if(!momentAtPinnedPosition(y,b))return;
+    const current=momentNearestStep(y,b);
+    const next=current+direction;
+    if(now<momentStopUntil){event.preventDefault();return;}
+    if(next<0 || next>2)return; // natural exit in either direction
+    event.preventDefault();
+    const fresh=now-momentWheelAt>175 || direction!==momentWheelDir;
+    momentWheelAt=now;
+    momentWheelDir=direction;
+    if(fresh)momentStep(direction);
+  },{capture:true,passive:false});
+
+  // Same touch gesture boundaries as 05. Native approach/departure remains
+  // untouched; internal swipes are individually captured and completed.
+  site.addEventListener('touchstart',event=>{
+    if(event.touches.length!==1 || !site.classList.contains('is-ready'))return;
+    momentTouch={x:event.touches[0].clientX,y:event.touches[0].clientY,captured:false,decided:false};
+  },{capture:true,passive:true});
+  site.addEventListener('touchmove',event=>{
+    const gesture=momentTouch;
+    if(!gesture || event.touches.length!==1)return;
+    const dx=event.touches[0].clientX-gesture.x;
+    const dy=event.touches[0].clientY-gesture.y;
+    if(gesture.captured || momentMoving){
+      if(event.cancelable)event.preventDefault();
+      return;
+    }
+    if(gesture.decided || Math.abs(dy)<12 || Math.abs(dy)<Math.abs(dx)*1.2)return;
+    gesture.decided=true;
+    const b=momentStops();
+    const y=site.scrollTop;
+    if(!momentAtPinnedPosition(y,b))return;
+    const direction=dy<0?1:-1;
+    const current=momentNearestStep(y,b);
+    if(current+direction<0 || current+direction>2)return;
+    if(event.cancelable)event.preventDefault();
+    gesture.captured=true;
+    momentStep(direction);
+  },{capture:true,passive:false});
+  site.addEventListener('touchend',()=>{momentTouch=null;},{capture:true,passive:true});
+  site.addEventListener('touchcancel',()=>{momentTouch=null;},{capture:true,passive:true});
+  // Retain the original keyboard support for the three moments. At either
+  // boundary, let the browser scroll normally, exactly as with a mouse wheel.
+  site.addEventListener('keydown',event=>{
+    const target=event.target;
+    if(event.altKey||event.ctrlKey||event.metaKey||target.closest?.('input,textarea,select,button,a,[contenteditable]'))return;
+    const direction=event.key==='ArrowDown'||event.key==='PageDown'?1:event.key==='ArrowUp'||event.key==='PageUp'?-1:0;
+    if(!direction || !site.classList.contains('is-ready'))return;
+    const b=momentStops();
+    if(!momentAtPinnedPosition(site.scrollTop,b))return;
+    if(momentMoving){event.preventDefault();return;}
+    if(momentNearestStep(site.scrollTop,b)+direction<0||momentNearestStep(site.scrollTop,b)+direction>2)return;
+    event.preventDefault();
+    momentStep(direction);
+  });
+
+  // Keyboard-accessible interactive Bistrot switcher.
+  const tabs = [...site.querySelectorAll('[data-food-tab]')];
+  const images = [...site.querySelectorAll('[data-food-image]')];
+  const foodData = [
+    {k:'Il mattino / 01',t:'Il primo caffè.',d:'Un espresso, un cappuccino, una colazione da gustare con calma.'},
+    {k:'Il giorno / 02',t:'A tavola, insieme.',d:'Una pausa pranzo e piatti ispirati ai sapori mediterranei.'},
+    {k:'La sera / 03',t:'Il rito dell’aperitivo.',d:'Un cocktail, un calice di vino e il piacere di ritrovarsi.'}
+  ];
+  const panel = document.getElementById('mary-tabpanel');
+  function setFood(index,focus=false) {
+    tabs.forEach((tab,i)=>{
+      const on=i===index;
+      tab.setAttribute('aria-selected',String(on));
+      tab.tabIndex=on?0:-1;
+      if(on&&focus)tab.focus();
+    });
+    images.forEach((img,i)=>img.classList.toggle('is-active',i===index));
+    panel.setAttribute('aria-labelledby',tabs[index].id);
+    document.getElementById('mary-food-kicker').textContent=foodData[index].k;
+    document.getElementById('mary-food-title').textContent=foodData[index].t;
+    document.getElementById('mary-food-desc').textContent=foodData[index].d;
+  }
+  tabs.forEach((tab,index)=>{
+    tab.addEventListener('click',()=>setFood(index));
+    tab.addEventListener('keydown',e=>{
+      const direction=e.key==='ArrowRight'||e.key==='ArrowDown'?1:e.key==='ArrowLeft'||e.key==='ArrowUp'?-1:0;
+      if(direction){e.preventDefault();setFood((index+direction+tabs.length)%tabs.length,true);}
+      if(e.key==='Home'){e.preventDefault();setFood(0,true);}
+      if(e.key==='End'){e.preventDefault();setFood(tabs.length-1,true);}
+    });
+  });
+
+  // Real Three.js implementation: lazy-load only when near the sculpture.
+  // The photo background behind the intro and website is never altered.
+  const webgl = document.getElementById('mary-webgl');
+  const spinBtn = document.getElementById('mary-glass-spin');
+  let webglReady=false,webglLoading=false;
+  let spinBoost=0, pointerX=0, pointerY=0, targetX=0, targetY=0;
+  let fallbackTurns=0;
+  let spinHandler=()=>{fallbackTurns++;const art=object.querySelector('.mr-object__fallback-glass');if(art)art.style.transform=`translateX(-50%) rotateY(${fallbackTurns*360}deg)`;};
+  spinBtn.addEventListener('click',()=>spinHandler());
+  object.addEventListener('pointermove',e=>{
+    const r=object.getBoundingClientRect();
+    targetX=clamp(((e.clientX-r.left)/r.width)*2-1,-1,1);
+    targetY=clamp(((e.clientY-r.top)/r.height)*2-1,-1,1);
+  },{passive:true});
+  object.addEventListener('pointerleave',()=>{targetX=0;targetY=0;});
+
+  async function mount3D() {
+    if (webglLoading || webglReady || reducedMotion.matches) return;
+    webglLoading=true;
+    try {
+      const THREE=await import('https://cdn.jsdelivr.net/npm/three@0.160.1/build/three.module.js');
+      const renderer=new THREE.WebGLRenderer({antialias:true,alpha:true,powerPreference:'low-power'});
+      renderer.setClearColor(0,0);
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio||1,1.6));
+      renderer.outputColorSpace=THREE.SRGBColorSpace;
+      renderer.toneMapping=THREE.ACESFilmicToneMapping;
+      renderer.toneMappingExposure=1.55;
+      webgl.appendChild(renderer.domElement);
+      const scene3=new THREE.Scene();
+      const camera=new THREE.PerspectiveCamera(36,1,.1,100);
+      camera.position.set(0,2.9,16.5);
+      camera.lookAt(0,2.85,0);
+      const root=new THREE.Group();scene3.add(root);
+      // Transparent blown-glass coupe silhouette, built with lathe geometry.
+      const profile=[
+        [0,0],[1.55,0],[1.73,.08],[1.73,.16],[.4,.18],
+        [.32,.29],[.24,1.7],[.3,1.85],[.58,1.97],[.9,2.2],
+        [1.34,2.75],[2.04,3.35],[2.36,3.85],[2.45,4.24],
+        [2.48,4.5],[2.46,4.63]
+      ].map(v=>new THREE.Vector2(v[0],v[1]));
+      const glass=new THREE.Mesh(new THREE.LatheGeometry(profile,96),new THREE.MeshPhysicalMaterial({
+        color:0xf0deca,transparent:true,opacity:.48,metalness:.06,roughness:.13,
+        transmission:.42,thickness:1.45,ior:1.45,side:THREE.DoubleSide,depthWrite:false,
+        clearcoat:1,clearcoatRoughness:.08
+      }));
+      root.add(glass);
+      // The liquid volume follows the INSIDE of the coupe from its bottom curve
+      // all the way up to the surface, leaving no empty glass below the drink.
+      const liquidProfile=[
+        [0,2.06],[.52,2.06],[.65,2.10],[.85,2.20],
+        [1.30,2.75],[1.87,3.25],[2.16,3.60],[2.31,3.88],[2.36,4.04]
+      ].map(v=>new THREE.Vector2(v[0],v[1]));
+      const drink=new THREE.Mesh(new THREE.LatheGeometry(liquidProfile,80),new THREE.MeshPhysicalMaterial({
+        color:0xc8a779,transparent:true,opacity:.74,metalness:.03,roughness:.25,side:THREE.DoubleSide,depthWrite:false
+      }));root.add(drink);
+      const topDrink=new THREE.Mesh(new THREE.CircleGeometry(2.32,80),new THREE.MeshPhysicalMaterial({
+        color:0xd5b891,transparent:true,opacity:.75,metalness:.08,roughness:.18,side:THREE.DoubleSide
+      }));topDrink.rotation.x=-Math.PI/2;topDrink.position.y=4.04;root.add(topDrink);
+      const rim=new THREE.Mesh(new THREE.TorusGeometry(2.47,.026,10,96),new THREE.MeshStandardMaterial({color:0xf3e7d4,metalness:.56,roughness:.2}));
+      rim.rotation.x=Math.PI/2;rim.position.y=4.63;root.add(rim);
+      const iceMat=new THREE.MeshPhysicalMaterial({color:0xf6e9d9,roughness:.12,metalness:.05,transparent:true,opacity:.68,transmission:.28,flatShading:true});
+      for(let i=0;i<3;i++){
+        const ice=new THREE.Mesh(new THREE.IcosahedronGeometry(.48+i*.03,1),iceMat);
+        ice.position.set(Math.cos(i*2.4)*.67,3.61+i*.10,Math.sin(i*2.4)*.5);
+        ice.rotation.set(i*.6,i*.4,i*.3);root.add(ice);
+      }
+      const garnish=new THREE.Mesh(new THREE.TorusGeometry(.72,.12,10,48),new THREE.MeshStandardMaterial({color:0x9e8b69,roughness:.55,metalness:.1}));
+      garnish.rotation.set(.9,.7,.2);garnish.position.set(-1.75,4.41,.65);root.add(garnish);
+      scene3.add(new THREE.AmbientLight(0xffffff,.95));
+      const key=new THREE.PointLight(0xf2d4b6,80,35);key.position.set(-5,8,7);scene3.add(key);
+      const edge=new THREE.PointLight(0xc9d9d5,110,30);edge.position.set(5,5,-3);scene3.add(edge);
+      const gold=new THREE.PointLight(0xf4b36b,35,30);gold.position.set(1,0,7);scene3.add(gold);
+      const lightOrb=new THREE.Mesh(new THREE.SphereGeometry(.35,16,16),new THREE.MeshBasicMaterial({color:0xecc89a,transparent:true,opacity:.12}));
+      lightOrb.position.set(5,1,-2);scene3.add(lightOrb);
+      let width=0,height=0,active=false,rafId=0,last=performance.now();
+      function resize(){
+        width=webgl.clientWidth;height=webgl.clientHeight;
+        if(!width||!height)return;
+        renderer.setSize(width,height,false);
+        camera.aspect=width/height;
+        camera.position.z=width<600?19.4:16.5;
+        // On phones, raise the rendered coupe within its own row (never over the caption).
+        camera.lookAt(0,width<600?1.1:2.85,0);
+        camera.updateProjectionMatrix();
+      }
+      const resizeObserver=new ResizeObserver(resize);
+      resizeObserver.observe(webgl);resize();
+      function frame(now){
+        if(!active){rafId=0;return;}
+        const dt=Math.min(.05,(now-last)/1000);last=now;
+        pointerX+=(targetX-pointerX)*Math.min(1,dt*4.4);
+        pointerY+=(targetY-pointerY)*Math.min(1,dt*4.4);
+        spinBoost*=Math.pow(.985,dt*60);
+        root.rotation.y+=dt*.12;
+        root.rotation.y+=(objectProgress*2.1+spinBoost+pointerX*.23-root.rotation.y)*Math.min(1,dt*1.8);
+        root.rotation.x+=(pointerY*.12-root.rotation.x)*Math.min(1,dt*3);
+        root.position.y=Math.sin(now*.00065)*.055;
+        renderer.render(scene3,camera);
+        rafId=requestAnimationFrame(frame);
+      }
+      function setActive(value){
+        if(value===active)return;
+        active=value;
+        if(active){last=performance.now();if(!rafId)rafId=requestAnimationFrame(frame);}
+        else if(rafId){cancelAnimationFrame(rafId);rafId=0;}
+      }
+      const io=new IntersectionObserver(entries=>{
+        entries.forEach(e=>setActive(e.isIntersecting && !document.hidden));
+      },{root:site,threshold:.01});io.observe(object);
+      document.addEventListener('visibilitychange',()=>{
+        const r=object.getBoundingClientRect();
+        setActive(!document.hidden && r.bottom>0 && r.top<site.clientHeight);
+      });
+      // The action triggers controlled rotation; no additional expensive loops.
+      spinHandler=()=>{spinBoost+=Math.PI*1.8;setActive(true);};
+      object.classList.add('is-webgl');
+      webglReady=true;
+    } catch(err) {
+      // Offline / blocked WebGL: the lightweight CSS sculpture stays visible.
+      // The CSS/SVG fallback remains interactive even without the CDN or WebGL.
+    }
+  }
+  if ('IntersectionObserver' in window && !reducedMotion.matches) {
+    const loader = new IntersectionObserver(entries=>{
+      if(entries.some(e=>e.isIntersecting)){loader.disconnect();mount3D();}
+    },{root:site,rootMargin:'80% 0px 80% 0px',threshold:0});
+    loader.observe(object);
+  }
+})();
+</script>
+
+</body>
+</html>
